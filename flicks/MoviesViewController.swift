@@ -15,6 +15,7 @@ class MoviesViewController: UIViewController {
     var isMoreDataLoading = false
     var currentPage: Int = 0
     var totalPages: Int = 0
+    var endpoint: String!
 
     @IBOutlet weak var moviesTableView: UITableView!
     @IBOutlet weak var errorView: UIView!
@@ -40,7 +41,7 @@ class MoviesViewController: UIViewController {
         tableFooterView.addSubview(loadingView)
         self.moviesTableView.tableFooterView = tableFooterView
 
-        fetchMovies()
+        fetchMovies(self.endpoint)
     }
 
     override func didReceiveMemoryWarning() {
@@ -49,7 +50,7 @@ class MoviesViewController: UIViewController {
     }
 
     func refreshControlAction(refreshControl: UIRefreshControl) {
-        fetchMovies(refreshControl: refreshControl)
+        fetchMovies(self.endpoint, refreshControl: refreshControl)
     }
 
     private func displayError(error: NSError) {
@@ -62,11 +63,12 @@ class MoviesViewController: UIViewController {
         self.errorView.hidden = false
     }
 
-    func fetchMovies(pageOffset: Int = 1, refreshControl: UIRefreshControl? = nil, replaceData: Bool = true) {
+    private func fetchMovies(endPoint: String, pageOffset: Int = 1, refreshControl: UIRefreshControl? = nil, replaceData: Bool = true) {
         // TODO: show progressHUD or refresh, not both
         MBProgressHUD.showHUDAddedTo(self.view, animated: true)
         Movie.fetchMovies(
-            pageOffset,
+            self.endpoint,
+            page: pageOffset,
             successCallback: { (newMovies, currentPage, totalPages) -> Void in
                 self.updateMovieDataStorage(newMovies, currentPage: currentPage, totalPages: totalPages, replaceData: replaceData)
                 self.moviesTableView.reloadData()
@@ -83,7 +85,7 @@ class MoviesViewController: UIViewController {
         MBProgressHUD.hideHUDForView(self.view, animated: true)
     }
 
-    func updateMovieDataStorage(newMovies: [Movie], currentPage: Int, totalPages: Int, replaceData: Bool) {
+    private func updateMovieDataStorage(newMovies: [Movie], currentPage: Int, totalPages: Int, replaceData: Bool) {
         if replaceData {
             self.movies = newMovies
         } else {
@@ -131,7 +133,8 @@ extension MoviesViewController: UIScrollViewDelegate {
             let isOneScreenFromBottom = scrollView.contentOffset.y > scrollViewOffsetThreshold
             if (isMoreDataAvailable && isOneScreenFromBottom && moviesTableView.dragging) {
                 isMoreDataLoading = true
-                fetchMovies(self.currentPage + 1, refreshControl: nil, replaceData: false)
+                let nextPage = self.currentPage + 1
+                fetchMovies(self.endpoint, pageOffset: nextPage, refreshControl: nil, replaceData: false)
             }
         }
     }

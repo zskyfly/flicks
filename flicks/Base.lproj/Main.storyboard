@@ -54,7 +54,7 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <view alpha="0.80000000000000004" contentMode="scaleToFill" id="0x8-BG-EYK">
+                            <view hidden="YES" alpha="0.80000000000000004" contentMode="scaleToFill" id="0x8-BG-EYK">
                                 <rect key="frame" x="0.0" y="65" width="320" height="76"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
@@ -139,7 +139,7 @@
         <!--Navigation Controller-->
         <scene sceneID="E2s-me-Hx8">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="hZr-fN-Jm9" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="MoviesNavigationController" automaticallyAdjustsScrollViewInsets="NO" id="hZr-fN-Jm9" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="NgR-Hq-w5T">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>

@@ -10,7 +10,7 @@ import AFNetworking
 import Foundation
 
 private let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
-private let nowPlayingurl = "https://api.themoviedb.org/3/movie/now_playing"
+private let moviesBaseUrl = "https://api.themoviedb.org/3/movie/"
 private let imageBaseUrl = "http://image.tmdb.org/t/p/"
 
 
@@ -21,6 +21,11 @@ class Movie {
         case Medium = "w500"
         case Large = "w780"
         case Original = "original"
+    }
+
+    enum Endpoint: String {
+        case NowPlaying = "now_playing"
+        case TopRated = "top_rated"
     }
 
     var posterPath: String?
@@ -94,9 +99,9 @@ class Movie {
         return nil
     }
 
-    class func fetchMovies(page: Int = 1, successCallback: ([Movie], currentPage: Int, totalPages: Int) -> Void, error: ((NSError?) -> Void)?) {
+    class func fetchMovies(endpoint: String = Movie.Endpoint.NowPlaying.rawValue, page: Int = 1, successCallback: ([Movie], currentPage: Int, totalPages: Int) -> Void, error: ((NSError?) -> Void)?) {
         let manager = AFHTTPRequestOperationManager()
-        let url = nowPlayingurl
+        let url = moviesBaseUrl + endpoint
         let params = ["api_key": apiKey, "page": String(page)]
 
         manager.GET(url, parameters: params, success: { (operation, responseObject) -> Void in
