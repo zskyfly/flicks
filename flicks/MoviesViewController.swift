@@ -13,8 +13,8 @@ class MoviesViewController: UIViewController {
 
     var movies = [Movie]()
     var isMoreDataLoading = false
-    var currentPage: Int!
-    var totalPages: Int!
+    var currentPage: Int = 0
+    var totalPages: Int = 0
 
     @IBOutlet weak var moviesTableView: UITableView!
     @IBOutlet weak var errorView: UIView!
@@ -102,11 +102,10 @@ class MoviesViewController: UIViewController {
 
 }
 
-extension MoviesViewController: UITableViewDelegate {
-
-}
+extension MoviesViewController: UITableViewDelegate {}
 
 extension MoviesViewController: UITableViewDataSource {
+
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return movies.count
     }
@@ -119,11 +118,14 @@ extension MoviesViewController: UITableViewDataSource {
 }
 
 extension MoviesViewController: UIScrollViewDelegate {
+
     func scrollViewDidScroll(scrollView: UIScrollView) {
         if (!isMoreDataLoading) {
             let scrollViewContentHeight = moviesTableView.contentSize.height
             let scrollViewOffsetThreshold = scrollViewContentHeight - moviesTableView.bounds.size.height
-            if (scrollView.contentOffset.y > scrollViewOffsetThreshold && moviesTableView.dragging && self.currentPage < self.totalPages) {
+            let isMoreDataAvailable = self.currentPage < self.totalPages
+            let isOneScreenFromBottom = scrollView.contentOffset.y > scrollViewOffsetThreshold
+            if (isMoreDataAvailable && isOneScreenFromBottom && moviesTableView.dragging) {
                 isMoreDataLoading = true
                 fetchMovies(self.currentPage + 1, refreshControl: nil, replaceData: false)
             }
