@@ -12,10 +12,14 @@ class MovieCell: UITableViewCell {
 
     var movie: Movie? {
         didSet {
+            titleLabel.text = ""
+            descriptionLabel.text = ""
             if let movie = movie {
                 titleLabel.text = movie.title
                 descriptionLabel.text = movie.overview
-                movieImageView.setImageWithURL(movie.listImageUrl!)
+                if let posterImageUrl = movie.getPosterImageUrl(Movie.PosterSize.Small.rawValue) {
+                    movieImageView.setImageWithURL(posterImageUrl, placeholderImage: UIImage(named: "BlankPosterImage"))
+                }
             }
         }
     }

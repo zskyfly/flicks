@@ -11,7 +11,10 @@ import MBProgressHUD
 
 class MoviesViewController: UIViewController {
 
-    var movies: [Movie]! = []
+    var movies = [Movie]()
+    var isMoreDataLoading = false
+    var currentPage: Int!
+    var totalPages: Int!
 
     @IBOutlet weak var moviesTableView: UITableView!
     @IBOutlet weak var errorView: UIView!
@@ -25,6 +28,12 @@ class MoviesViewController: UIViewController {
         self.moviesTableView.delegate = self
         self.moviesTableView.dataSource = self
         errorView.hidden = true
+        let tableFooterView: UIView = UIView(frame: CGRectMake(0, 0, 320, 50))
+        let loadingView: UIActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+        loadingView.startAnimating()
+        loadingView.center = tableFooterView.center
+        tableFooterView.addSubview(loadingView)
+        self.moviesTableView.tableFooterView = tableFooterView
         fetchMovies()
     }
 
@@ -34,7 +43,7 @@ class MoviesViewController: UIViewController {
     }
 
     func refreshControlAction(refreshControl: UIRefreshControl) {
-        fetchMovies(refreshControl)
+        fetchMovies(refreshControl: refreshControl)
     }
 
     func displayError(error: NSError) {
@@ -46,11 +55,17 @@ class MoviesViewController: UIViewController {
         self.errorView.hidden = false
     }
 
-    func fetchMovies(refreshControl: UIRefreshControl? = nil) {
+    func fetchMovies(page: Int = 1, refreshControl: UIRefreshControl? = nil, replaceData: Bool = true) {
         MBProgressHUD.showHUDAddedTo(self.view, animated: true)
-        Movie.fetchMovies(
-            { (newMovies) -> Void in
-                self.movies = newMovies
+        Movie.fetchMovies(page, successCallback: { (newMovies, currentPage, totalPages) -> Void in
+                if replaceData {
+                    self.movies = newMovies
+                } else {
+                    self.movies.appendContentsOf(newMovies)
+                    self.isMoreDataLoading = false
+                }
+                self.currentPage = currentPage
+                self.totalPages = totalPages
                 self.moviesTableView.reloadData()
                 if let refreshControl = refreshControl {
                     refreshControl.endRefreshing()
@@ -79,16 +94,25 @@ extension MoviesViewController: UITableViewDelegate {
 
 extension MoviesViewController: UITableViewDataSource {
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let movies = self.movies {
-            return movies.count
-        } else {
-            return 0
-        }
+        return movies.count
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("MovieCell", forIndexPath: indexPath) as! MovieCell
         cell.movie = self.movies[indexPath.row]
         return cell
+    }
+}
+
+extension MoviesViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        if (!isMoreDataLoading) {
+            let scrollViewContentHeight = moviesTableView.contentSize.height
+            let scrollViewOffsetThreshold = scrollViewContentHeight - moviesTableView.bounds.size.height
+            if (scrollView.contentOffset.y > scrollViewOffsetThreshold && moviesTableView.dragging && self.currentPage < self.totalPages) {
+                isMoreDataLoading = true
+                fetchMovies(self.currentPage + 1, refreshControl: nil, replaceData: false)
+            }
+        }
     }
 }

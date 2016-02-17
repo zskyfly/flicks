@@ -23,14 +23,18 @@ class MovieDetailViewController: UIViewController {
         if let movie = self.movie {
             titleLabel.text = movie.title
             descriptionLabel.text = movie.overview
-            posterImageView.setImageWithURL(movie.listImageUrl!)
+            if let posterImageUrl = movie.getPosterImageUrl(Movie.PosterSize.Small.rawValue) {
+                posterImageView.setImageWithURL(posterImageUrl, placeholderImage: UIImage(named: "BlankPosterImage"))
+            }
+            if let posterImageUrl = movie.getPosterImageUrl(Movie.PosterSize.Original.rawValue) {
+                posterImageView.setImageWithURL(posterImageUrl)
+            }
         }
         descriptionLabel.sizeToFit()
+        // TODO: how to sizeToFit the infoView container?
 //        infoView.sizeToFit()
+        infoView.frame.size.height = descriptionLabel.frame.height + titleLabel.frame.height + 24.0
         scrollView.contentSize = CGSize(width: scrollView.frame.size.width, height: infoView.frame.origin.y + infoView.frame.size.height)
-
-
-        // Do any additional setup after loading the view.
     }
 
     override func didReceiveMemoryWarning() {

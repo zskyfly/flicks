@@ -9,15 +9,21 @@
 import AFNetworking
 import Foundation
 
-
-private let apiKey: String? = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
-private let nowPlayingurl = "https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey!)"
-private let imageBaseUrl = "http://image.tmdb.org/t/p/w500"
+private let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
+private let nowPlayingurl = "https://api.themoviedb.org/3/movie/now_playing"
+private let imageBaseUrl = "http://image.tmdb.org/t/p/"
 
 
 class Movie {
+
+    enum PosterSize: String {
+        case Small = "w154"
+        case Medium = "w500"
+        case Large = "w780"
+        case Original = "original"
+    }
+
     var posterPath: String?
-    var listImageUrl: NSURL?
     var adult: Bool?
     var overview: String?
     var releaseDate: String?
@@ -35,7 +41,6 @@ class Movie {
     init(jsonResult: NSDictionary) {
         if let posterPath = jsonResult["poster_path"] as? String {
             self.posterPath = posterPath
-            self.listImageUrl = NSURL(string: imageBaseUrl + posterPath)
         }
         if let adult = jsonResult["adult"] as? Bool {
             self.adult = adult
@@ -81,17 +86,29 @@ class Movie {
         }
     }
 
-    class func fetchMovies(successCallback: ([Movie]) -> Void, error: ((NSError?) -> Void)?) {
+    func getPosterImageUrl(size: String) -> NSURL? {
+        if let posterPath = self.posterPath {
+            let fullUrl = imageBaseUrl + size + posterPath
+            return NSURL(string: fullUrl)
+        }
+        return nil
+    }
+
+    class func fetchMovies(page: Int = 1, successCallback: ([Movie], currentPage: Int, totalPages: Int) -> Void, error: ((NSError?) -> Void)?) {
         let manager = AFHTTPRequestOperationManager()
         let url = nowPlayingurl
+        let params = ["api_key": apiKey, "page": String(page)]
 
-        manager.GET(url, parameters: nil, success: { (operation, responseObject) -> Void in
+        manager.GET(url, parameters: params, success: { (operation, responseObject) -> Void in
+
             if let results = responseObject["results"] as? NSArray {
+                let currentPage = responseObject["page"] as! Int
+                let totalPages = responseObject["total_pages"] as! Int
                 var movies: [Movie] = []
                 for result in results as! [NSDictionary] {
                     movies.append(Movie(jsonResult: result))
                 }
-                successCallback(movies)
+                successCallback(movies, currentPage: currentPage, totalPages: totalPages)
             }
             }, failure: { (operation, requestError) -> Void in
                 if let errorCallback = error {
@@ -117,6 +134,6 @@ extension Movie: CustomStringConvertible {
             "\n\t[popularity: \(self.popularity)]" +
             "\n\t[voteCount: \(self.voteCount)]" +
             "\n\t[video: \(self.video)]" +
-        "\n\t[voteAverage: \(self.voteAverage)]"
+            "\n\t[voteAverage: \(self.voteAverage)]"
     }
 }
