@@ -22,18 +22,24 @@ class MoviesViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: "refreshControlAction:", forControlEvents: UIControlEvents.ValueChanged)
-        self.moviesTableView.insertSubview(refreshControl, atIndex: 0)
+
         self.moviesTableView.delegate = self
         self.moviesTableView.dataSource = self
         errorView.hidden = true
+
+        // add refresh control
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: "refreshControlAction:", forControlEvents: UIControlEvents.ValueChanged)
+        self.moviesTableView.insertSubview(refreshControl, atIndex: 0)
+
+        // add infinite scroll footer
         let tableFooterView: UIView = UIView(frame: CGRectMake(0, 0, 320, 50))
         let loadingView: UIActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
         loadingView.startAnimating()
         loadingView.center = tableFooterView.center
         tableFooterView.addSubview(loadingView)
         self.moviesTableView.tableFooterView = tableFooterView
+
         fetchMovies()
     }
 
@@ -55,25 +61,33 @@ class MoviesViewController: UIViewController {
         self.errorView.hidden = false
     }
 
-    func fetchMovies(page: Int = 1, refreshControl: UIRefreshControl? = nil, replaceData: Bool = true) {
+    func fetchMovies(pageOffset: Int = 1, refreshControl: UIRefreshControl? = nil, replaceData: Bool = true) {
         MBProgressHUD.showHUDAddedTo(self.view, animated: true)
-        Movie.fetchMovies(page, successCallback: { (newMovies, currentPage, totalPages) -> Void in
-                if replaceData {
-                    self.movies = newMovies
-                } else {
-                    self.movies.appendContentsOf(newMovies)
-                    self.isMoreDataLoading = false
-                }
-                self.currentPage = currentPage
-                self.totalPages = totalPages
+        Movie.fetchMovies(
+            pageOffset,
+            successCallback: { (newMovies, currentPage, totalPages) -> Void in
+                self.updateMovieDataStorage(newMovies, currentPage: currentPage, totalPages: totalPages, replaceData: replaceData)
                 self.moviesTableView.reloadData()
                 if let refreshControl = refreshControl {
                     refreshControl.endRefreshing()
                 }
-            }, error: { (error) -> Void in
+            },
+            error: { (error) -> Void in
                 self.displayError(error!)
-        })
+            }
+        )
         MBProgressHUD.hideHUDForView(self.view, animated: true)
+    }
+
+    func updateMovieDataStorage(newMovies: [Movie], currentPage: Int, totalPages: Int, replaceData: Bool) {
+        if replaceData {
+            self.movies = newMovies
+        } else {
+            self.movies.appendContentsOf(newMovies)
+            self.isMoreDataLoading = false
+        }
+        self.currentPage = currentPage
+        self.totalPages = totalPages
     }
 
     // MARK: - Navigation
