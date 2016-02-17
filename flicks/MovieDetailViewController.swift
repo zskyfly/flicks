@@ -31,6 +31,9 @@ class MovieDetailViewController: UIViewController {
                 posterImageView.setImageWithURL(fullUrl)
             }
         }
+        // TODO: maybe hide tabBarController
+//        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+//        appDelegate.window!.rootViewController?.tabBar.hidden = true
         self.resizeViews()
     }
 
@@ -42,7 +45,7 @@ class MovieDetailViewController: UIViewController {
     func resizeViews() {
         descriptionLabel.sizeToFit()
         infoView.frame.size.height = descriptionLabel.frame.height + titleLabel.frame.height + 32.0
-        scrollView.contentSize = CGSize(width: scrollView.frame.size.width, height: infoView.frame.origin.y + infoView.frame.size.height)
+        scrollView.contentSize = CGSize(width: scrollView.frame.size.width, height: infoView.frame.origin.y + infoView.frame.size.height + infoView.frame.origin.x)
     }
     
 

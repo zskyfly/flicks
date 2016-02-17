@@ -12,10 +12,13 @@ import MBProgressHUD
 class MoviesViewController: UIViewController {
 
     var movies = [Movie]()
+    var filteredMovies = [Movie]()
     var isMoreDataLoading = false
     var currentPage: Int = 0
     var totalPages: Int = 0
     var endpoint: String!
+    var searchBar: UISearchBar!
+    var searchActive: Bool = false
 
     @IBOutlet weak var moviesTableView: UITableView!
     @IBOutlet weak var errorView: UIView!
@@ -40,6 +43,14 @@ class MoviesViewController: UIViewController {
         loadingView.center = tableFooterView.center
         tableFooterView.addSubview(loadingView)
         self.moviesTableView.tableFooterView = tableFooterView
+
+        // Initialize the UISearchBar
+        searchBar = UISearchBar()
+        searchBar.delegate = self
+
+        // Add SearchBar to the NavigationBar
+        searchBar.sizeToFit()
+        navigationItem.titleView = searchBar
 
         fetchMovies(self.endpoint)
     }
@@ -104,6 +115,7 @@ class MoviesViewController: UIViewController {
         let indexPath = moviesTableView.indexPathForCell(cell)
         let detailViewController = segue.destinationViewController as! MovieDetailViewController
         detailViewController.movie = self.movies[indexPath!.row]
+        detailViewController.hidesBottomBarWhenPushed = true
     }
 
 }
@@ -113,13 +125,20 @@ extension MoviesViewController: UITableViewDelegate {}
 extension MoviesViewController: UITableViewDataSource {
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return movies.count
+        return self.getMovies().count
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("MovieCell", forIndexPath: indexPath) as! MovieCell
-        cell.movie = self.movies[indexPath.row]
+        cell.movie = self.getMovies()[indexPath.row]
         return cell
+    }
+
+    private func getMovies() -> [Movie] {
+        if self.searchActive {
+            return self.filteredMovies
+        }
+        return self.movies
     }
 }
 
@@ -137,5 +156,49 @@ extension MoviesViewController: UIScrollViewDelegate {
                 fetchMovies(self.endpoint, pageOffset: nextPage, refreshControl: nil, replaceData: false)
             }
         }
+    }
+}
+
+extension MoviesViewController: UISearchBarDelegate {
+    func searchBarShouldBeginEditing(searchBar: UISearchBar) -> Bool {
+        searchBar.setShowsCancelButton(true, animated: true)
+        self.searchActive = true
+        return true;
+    }
+
+    func searchBarShouldEndEditing(searchBar: UISearchBar) -> Bool {
+        searchBar.setShowsCancelButton(false, animated: true)
+        self.searchActive = false
+        return true;
+    }
+
+    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+        self.searchActive = false
+        moviesTableView.reloadData()
+    }
+
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+        self.searchActive = false
+    }
+
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        self.filteredMovies = self.movies.filter({ (movie) -> Bool in
+            if let movieTitle: String = movie.title {
+                if movieTitle.rangeOfString(searchText, options: NSStringCompareOptions.CaseInsensitiveSearch) != nil {
+                    return true
+                }
+            }
+            return false
+        })
+
+        if(self.filteredMovies.count == 0){
+            self.searchActive = false;
+        } else {
+            self.searchActive = true;
+        }
+        self.moviesTableView.reloadData()
     }
 }
