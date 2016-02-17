@@ -7,32 +7,58 @@
 //
 
 import UIKit
+import MBProgressHUD
 
 class MoviesViewController: UIViewController {
 
-    var movies: [Movie]!
+    var movies: [Movie]! = []
 
     @IBOutlet weak var moviesTableView: UITableView!
+    @IBOutlet weak var errorView: UIView!
+    @IBOutlet weak var errorLabel: UILabel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: "refreshControlAction:", forControlEvents: UIControlEvents.ValueChanged)
+        self.moviesTableView.insertSubview(refreshControl, atIndex: 0)
         self.moviesTableView.delegate = self
         self.moviesTableView.dataSource = self
-
-        Movie.fetchMovies({ (newMovies) in
-            self.movies = newMovies
-            self.moviesTableView.reloadData()
-
-//            MBProgressHUD.hideHUDForView(self.view, animated: true)
-            }, error: { (error) -> Void in
-                print(error)
-        })
-
+        errorView.hidden = true
+        fetchMovies()
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+
+    func refreshControlAction(refreshControl: UIRefreshControl) {
+        fetchMovies(refreshControl)
+    }
+
+    func displayError(error: NSError) {
+        let errorMessage = error.localizedDescription
+        self.errorLabel.text = errorMessage
+        self.errorLabel.sizeToFit()
+        // TODO: how to resize the containing imageView
+        self.errorView.sizeToFit()
+        self.errorView.hidden = false
+    }
+
+    func fetchMovies(refreshControl: UIRefreshControl? = nil) {
+        MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+        Movie.fetchMovies(
+            { (newMovies) -> Void in
+                self.movies = newMovies
+                self.moviesTableView.reloadData()
+                if let refreshControl = refreshControl {
+                    refreshControl.endRefreshing()
+                }
+            }, error: { (error) -> Void in
+                self.displayError(error!)
+        })
+        MBProgressHUD.hideHUDForView(self.view, animated: true)
     }
 
     // MARK: - Navigation

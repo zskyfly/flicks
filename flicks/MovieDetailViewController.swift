@@ -10,21 +10,14 @@ import UIKit
 
 class MovieDetailViewController: UIViewController {
 
-    var movie: Movie? {
-        didSet {
-            if let movie = movie {
-                print(movie)
-//                titleLabel.text = movie.title
-//                descriptionLabel.text = movie.overview
-//                posterImageView.setImageWithURL(movie.listImageUrl!)
-            }
-        }
-    }
+    var movie: Movie?
 
+    @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var posterImageView: UIImageView!
     @IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var titleLabel: UILabel!
-    
+    @IBOutlet weak var infoView: UIView!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         if let movie = self.movie {
@@ -32,7 +25,10 @@ class MovieDetailViewController: UIViewController {
             descriptionLabel.text = movie.overview
             posterImageView.setImageWithURL(movie.listImageUrl!)
         }
-        
+        descriptionLabel.sizeToFit()
+//        infoView.sizeToFit()
+        scrollView.contentSize = CGSize(width: scrollView.frame.size.width, height: infoView.frame.origin.y + infoView.frame.size.height)
+
 
         // Do any additional setup after loading the view.
     }
