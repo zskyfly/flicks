@@ -52,28 +52,32 @@ class MoviesViewController: UIViewController {
         fetchMovies(refreshControl: refreshControl)
     }
 
-    func displayError(error: NSError) {
+    private func displayError(error: NSError) {
         let errorMessage = error.localizedDescription
         self.errorLabel.text = errorMessage
         self.errorLabel.sizeToFit()
         // TODO: how to resize the containing imageView
         self.errorView.sizeToFit()
+        self.errorView.frame.size.height = errorLabel.frame.height + (2 * errorLabel.frame.origin.y)
         self.errorView.hidden = false
     }
 
     func fetchMovies(pageOffset: Int = 1, refreshControl: UIRefreshControl? = nil, replaceData: Bool = true) {
+        // TODO: show progressHUD or refresh, not both
         MBProgressHUD.showHUDAddedTo(self.view, animated: true)
         Movie.fetchMovies(
             pageOffset,
             successCallback: { (newMovies, currentPage, totalPages) -> Void in
                 self.updateMovieDataStorage(newMovies, currentPage: currentPage, totalPages: totalPages, replaceData: replaceData)
                 self.moviesTableView.reloadData()
+                self.errorView.hidden = true
                 if let refreshControl = refreshControl {
                     refreshControl.endRefreshing()
                 }
             },
             error: { (error) -> Void in
                 self.displayError(error!)
+                self.isMoreDataLoading = false
             }
         )
         MBProgressHUD.hideHUDForView(self.view, animated: true)

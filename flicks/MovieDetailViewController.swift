@@ -23,6 +23,7 @@ class MovieDetailViewController: UIViewController {
         if let movie = self.movie {
             titleLabel.text = movie.title
             descriptionLabel.text = movie.overview
+            // TODO: better default image handling
             if let previewUrl = movie.getPosterImageUrl(Movie.PosterSize.Small.rawValue) {
                 posterImageView.setImageWithURL(previewUrl, placeholderImage: UIImage(named: "BlankPosterImage"))
             }
@@ -40,7 +41,7 @@ class MovieDetailViewController: UIViewController {
 
     func resizeViews() {
         descriptionLabel.sizeToFit()
-        infoView.frame.size.height = descriptionLabel.frame.height + titleLabel.frame.height + 24.0
+        infoView.frame.size.height = descriptionLabel.frame.height + titleLabel.frame.height + 32.0
         scrollView.contentSize = CGSize(width: scrollView.frame.size.width, height: infoView.frame.origin.y + infoView.frame.size.height)
     }
     
