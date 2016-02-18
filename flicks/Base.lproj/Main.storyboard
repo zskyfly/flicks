@@ -69,6 +69,7 @@
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                         </subviews>
+                        <gestureRecognizers/>
                     </view>
                     <navigationItem key="navigationItem" id="SKS-V8-Rcl"/>
                     <connections>

@@ -31,9 +31,6 @@ class MovieDetailViewController: UIViewController {
                 posterImageView.setImageWithURL(fullUrl)
             }
         }
-        // TODO: maybe hide tabBarController
-//        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-//        appDelegate.window!.rootViewController?.tabBar.hidden = true
         self.resizeViews()
     }
 

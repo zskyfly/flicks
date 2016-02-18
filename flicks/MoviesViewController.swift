@@ -18,7 +18,7 @@ class MoviesViewController: UIViewController {
     var totalPages: Int = 0
     var endpoint: String!
     var searchBar: UISearchBar!
-    var searchActive: Bool = false
+    var isSearchActive: Bool = false
 
     @IBOutlet weak var moviesTableView: UITableView!
     @IBOutlet weak var errorView: UIView!
@@ -96,6 +96,14 @@ class MoviesViewController: UIViewController {
         MBProgressHUD.hideHUDForView(self.view, animated: true)
     }
 
+    private func toggleControls() {
+        if self.isSearchActive {
+            moviesTableView.tableFooterView?.hidden = true
+        } else {
+            moviesTableView.tableFooterView?.hidden = false
+        }
+    }
+
     private func updateMovieDataStorage(newMovies: [Movie], currentPage: Int, totalPages: Int, replaceData: Bool) {
         if replaceData {
             self.movies = newMovies
@@ -111,13 +119,14 @@ class MoviesViewController: UIViewController {
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        self.searchBar.resignFirstResponder()
         let cell = sender as! UITableViewCell
         let indexPath = moviesTableView.indexPathForCell(cell)
         let detailViewController = segue.destinationViewController as! MovieDetailViewController
-        detailViewController.movie = self.movies[indexPath!.row]
+        detailViewController.movie = self.getMovies()[indexPath!.row]
+        moviesTableView.deselectRowAtIndexPath(indexPath!, animated: false)
         detailViewController.hidesBottomBarWhenPushed = true
     }
-
 }
 
 extension MoviesViewController: UITableViewDelegate {}
@@ -135,7 +144,7 @@ extension MoviesViewController: UITableViewDataSource {
     }
 
     private func getMovies() -> [Movie] {
-        if self.searchActive {
+        if self.isSearchActive {
             return self.filteredMovies
         }
         return self.movies
@@ -145,7 +154,7 @@ extension MoviesViewController: UITableViewDataSource {
 extension MoviesViewController: UIScrollViewDelegate {
 
     func scrollViewDidScroll(scrollView: UIScrollView) {
-        if (!isMoreDataLoading) {
+        if (!self.isMoreDataLoading && !self.isSearchActive) {
             let scrollViewContentHeight = moviesTableView.contentSize.height
             let scrollViewOffsetThreshold = scrollViewContentHeight - moviesTableView.bounds.size.height
             let isMoreDataAvailable = self.currentPage < self.totalPages
@@ -161,44 +170,43 @@ extension MoviesViewController: UIScrollViewDelegate {
 
 extension MoviesViewController: UISearchBarDelegate {
     func searchBarShouldBeginEditing(searchBar: UISearchBar) -> Bool {
-        searchBar.setShowsCancelButton(true, animated: true)
-        self.searchActive = true
+        self.searchBar.setShowsCancelButton(true, animated: true)
         return true;
     }
 
     func searchBarShouldEndEditing(searchBar: UISearchBar) -> Bool {
-        searchBar.setShowsCancelButton(false, animated: true)
-        self.searchActive = false
+        self.searchBar.setShowsCancelButton(false, animated: true)
         return true;
     }
 
     func searchBarCancelButtonClicked(searchBar: UISearchBar) {
-        searchBar.text = ""
-        searchBar.resignFirstResponder()
-        self.searchActive = false
+        self.searchBar.text = ""
+        self.searchBar.resignFirstResponder()
+        self.isSearchActive = false
         moviesTableView.reloadData()
     }
 
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
-        searchBar.resignFirstResponder()
-        self.searchActive = false
+        self.searchBar.resignFirstResponder()
     }
 
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
-        self.filteredMovies = self.movies.filter({ (movie) -> Bool in
-            if let movieTitle: String = movie.title {
-                if movieTitle.rangeOfString(searchText, options: NSStringCompareOptions.CaseInsensitiveSearch) != nil {
-                    return true
-                }
-            }
-            return false
-        })
-
-        if(self.filteredMovies.count == 0){
-            self.searchActive = false;
+        print("SearchBar: \(searchText)")
+        if searchText.isEmpty {
+            self.isSearchActive = false
         } else {
-            self.searchActive = true;
+            self.isSearchActive = true
+
+            self.filteredMovies = self.movies.filter({ (movie) -> Bool in
+                if let movieTitle: String = movie.title {
+                    if movieTitle.rangeOfString(searchText, options: NSStringCompareOptions.CaseInsensitiveSearch) != nil {
+                        return true
+                    }
+                }
+                return false
+            })
         }
         self.moviesTableView.reloadData()
+        self.toggleControls()
     }
 }
