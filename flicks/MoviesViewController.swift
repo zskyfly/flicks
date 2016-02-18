@@ -20,6 +20,7 @@ class MoviesViewController: UIViewController {
     var searchBar: UISearchBar!
     var isSearchActive: Bool = false
 
+    @IBOutlet weak var moviesCollectionView: UICollectionView!
     @IBOutlet weak var moviesTableView: UITableView!
     @IBOutlet weak var errorView: UIView!
     @IBOutlet weak var errorLabel: UILabel!
@@ -29,6 +30,8 @@ class MoviesViewController: UIViewController {
 
         self.moviesTableView.delegate = self
         self.moviesTableView.dataSource = self
+        self.moviesCollectionView.delegate = self
+        self.moviesCollectionView.dataSource = self
         errorView.hidden = true
 
         // add refresh control
@@ -83,6 +86,7 @@ class MoviesViewController: UIViewController {
             successCallback: { (newMovies, currentPage, totalPages) -> Void in
                 self.updateMovieDataStorage(newMovies, currentPage: currentPage, totalPages: totalPages, replaceData: replaceData)
                 self.moviesTableView.reloadData()
+                self.moviesCollectionView.reloadData()
                 self.errorView.hidden = true
                 if let refreshControl = refreshControl {
                     refreshControl.endRefreshing()
@@ -151,6 +155,20 @@ extension MoviesViewController: UITableViewDataSource {
     }
 }
 
+extension MoviesViewController: UICollectionViewDataSource {
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return getMovies().count
+    }
+
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("MovieCollectionCell", forIndexPath: indexPath) as! MovieCollectionViewCell
+        cell.movie = self.getMovies()[indexPath.row]
+        return cell
+    }
+}
+
+extension MoviesViewController: UICollectionViewDelegate {}
+
 extension MoviesViewController: UIScrollViewDelegate {
 
     func scrollViewDidScroll(scrollView: UIScrollView) {
@@ -191,7 +209,6 @@ extension MoviesViewController: UISearchBarDelegate {
     }
 
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
-        print("SearchBar: \(searchText)")
         if searchText.isEmpty {
             self.isSearchActive = false
         } else {
