@@ -27,18 +27,21 @@ The following **additional** features are implemented:
 - [x] Smart-infinite scroll: loads more results until all results loaded from endpoint
 - [x] Enhanced details scroll view auto-resizes to content, overlays background image and scroll bars hidden
 - [x] Convert release date from "2012-12-21" to NSDate and then custom format, "Dec 21, 2012"
+- [x] Lots of custom assets and fallback movie poster images when images fail to load
+- [x] Network error displays actual human readable error message returned in NSError
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://cloud.githubusercontent.com/assets/1156702/13135125/9f80da08-d5c2-11e5-9d00-36e86b0d3c82.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+There are so many directions this app could go, and it was easy to get sucked into the details of each feature.  
+I wish I had more time to go deep on each one, but feel like I covered a wide range of features given the time allotted.
 
 ## License
 
