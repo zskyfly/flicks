@@ -23,12 +23,15 @@ class MovieDetailViewController: UIViewController {
         if let movie = self.movie {
             titleLabel.text = movie.title
             descriptionLabel.text = movie.overview
+            posterImageView.image = UIImage(named: "MissingPoster")
             // TODO: better default image handling
-            if let previewUrl = movie.getPosterImageUrl(Movie.PosterSize.Small.rawValue) {
-                posterImageView.setImageWithURL(previewUrl, placeholderImage: UIImage(named: "BlankPosterImage"))
-            }
-            if let fullUrl = movie.getPosterImageUrl(Movie.PosterSize.Original.rawValue) {
-                posterImageView.setImageWithURL(fullUrl)
+            if movie.posterPath != nil {
+                let previewUrl = movie.getPosterImageUrl(Movie.PosterSize.Small.rawValue)
+                let fullUrl = movie.getPosterImageUrl(Movie.PosterSize.Original.rawValue)
+
+                posterImageView.setImageWithURLRequest(NSURLRequest(URL: fullUrl!), placeholderImage: UIImage(named: "MissingPoster"), success: nil, failure: { (NSURLRequest, NSHTTPURLResponse, NSError) -> Void in
+                    self.posterImageView.setImageWithURL(previewUrl!)
+                })
             }
         }
         self.resizeViews()

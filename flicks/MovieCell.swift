@@ -14,12 +14,17 @@ class MovieCell: UITableViewCell {
         didSet {
             titleLabel.text = ""
             descriptionLabel.text = ""
+            movieImageView.image = UIImage(named: "BlankPosterImage")
             if let movie = movie {
                 titleLabel.text = movie.title
                 descriptionLabel.text = movie.overview
                 if let posterImageUrl = movie.getPosterImageUrl(Movie.PosterSize.Small.rawValue) {
                     movieImageView.setImageWithURL(posterImageUrl, placeholderImage: UIImage(named: "BlankPosterImage"))
                 }
+            }
+            descriptionLabel.sizeToFit()
+            if descriptionLabel.frame.height > 66.0 {
+                descriptionLabel.frame.size = CGSize(width: descriptionLabel.frame.size.width, height: 66.0)
             }
         }
     }
