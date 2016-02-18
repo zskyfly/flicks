@@ -86,14 +86,12 @@ class MoviesViewController: UIViewController {
         let errorMessage = error.localizedDescription
         self.errorLabel.text = errorMessage
         self.errorLabel.sizeToFit()
-        // TODO: how to resize the containing imageView
         self.errorView.sizeToFit()
         self.errorView.frame.size.height = errorLabel.frame.height + (2 * errorLabel.frame.origin.y)
         self.errorView.hidden = false
     }
 
     private func fetchMovies(endPoint: String, pageOffset: Int = 1, refreshControl: UIRefreshControl? = nil, replaceData: Bool = true) {
-        // TODO: show progressHUD or refresh, not both
         MBProgressHUD.showHUDAddedTo(self.view, animated: true)
         Movie.fetchMovies(
             self.endpoint,
@@ -150,12 +148,25 @@ class MoviesViewController: UIViewController {
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         self.searchBar.resignFirstResponder()
-        let cell = sender as! UITableViewCell
-        let indexPath = moviesTableView.indexPathForCell(cell)
-        let detailViewController = segue.destinationViewController as! MovieDetailViewController
-        detailViewController.movie = self.getMovies()[indexPath!.row]
-        moviesTableView.deselectRowAtIndexPath(indexPath!, animated: false)
-        detailViewController.hidesBottomBarWhenPushed = true
+        let vc = segue.destinationViewController as! MovieDetailViewController
+        vc.hidesBottomBarWhenPushed = true
+
+        if let identifier = segue.identifier {
+            switch identifier {
+                case "MovieCollectionCellSegue":
+                    let cell = sender as! UICollectionViewCell
+                    let indexPath = self.moviesCollectionView.indexPathForCell(cell)
+                    vc.movie = self.getMovies()[indexPath!.row]
+                    moviesCollectionView.deselectItemAtIndexPath(indexPath!, animated: false)
+                case "MovieTableCellSegue":
+                    let cell = sender as! UITableViewCell
+                    let indexPath = self.moviesTableView.indexPathForCell(cell)
+                    vc.movie = self.getMovies()[indexPath!.row]
+                    moviesTableView.deselectRowAtIndexPath(indexPath!, animated: false)
+                default:
+                    return
+            }
+        }
     }
 }
 

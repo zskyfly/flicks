@@ -31,6 +31,8 @@ class MovieCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        movieImageView.frame.size.width = 90.0
+        movieImageView.frame.size.height = 90.0
     }
 
     override func setSelected(selected: Bool, animated: Bool) {
