@@ -160,10 +160,34 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="yAK-Kk-j6S">
-                                                <rect key="frame" x="10" y="37" width="270" height="21"/>
+                                                <rect key="frame" x="10" y="61" width="270" height="29"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="calendar" id="fse-pd-C4g">
+                                                <rect key="frame" x="10" y="37" width="16" height="16"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            </imageView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Popularity" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="yGb-NE-zmW">
+                                                <rect key="frame" x="175" y="37" width="97" height="16"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="star" id="N3M-Sj-ImM">
+                                                <rect key="frame" x="151" y="37" width="16" height="16"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            </imageView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ReleaseDate" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Qhp-4W-0X0">
+                                                <rect key="frame" x="32" y="37" width="111" height="16"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
@@ -179,6 +203,8 @@
                         <outlet property="descriptionLabel" destination="yAK-Kk-j6S" id="rNV-fJ-ezQ"/>
                         <outlet property="infoView" destination="muK-cP-aY6" id="37A-it-zsm"/>
                         <outlet property="posterImageView" destination="ZYf-H5-0dI" id="kWV-EF-K38"/>
+                        <outlet property="poularityLabel" destination="yGb-NE-zmW" id="CV0-uG-7uC"/>
+                        <outlet property="releaseDateLabel" destination="Qhp-4W-0X0" id="iDH-bb-MQs"/>
                         <outlet property="scrollView" destination="waw-d9-tpC" id="6P0-uB-UvA"/>
                         <outlet property="titleLabel" destination="0tC-fR-VcP" id="uQ5-wU-VOA"/>
                     </connections>
@@ -208,8 +234,10 @@
         </scene>
     </scenes>
     <resources>
+        <image name="calendar" width="16" height="16"/>
         <image name="grid_view" width="24" height="24"/>
         <image name="list_view" width="24" height="24"/>
+        <image name="star" width="16" height="16"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="CR0-ui-Yz9"/>

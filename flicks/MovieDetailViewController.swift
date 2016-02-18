@@ -12,6 +12,8 @@ class MovieDetailViewController: UIViewController {
 
     var movie: Movie?
 
+    @IBOutlet weak var poularityLabel: UILabel!
+    @IBOutlet weak var releaseDateLabel: UILabel!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var posterImageView: UIImageView!
     @IBOutlet weak var descriptionLabel: UILabel!
@@ -24,7 +26,9 @@ class MovieDetailViewController: UIViewController {
             titleLabel.text = movie.title
             descriptionLabel.text = movie.overview
             posterImageView.image = UIImage(named: "MissingPoster")
-            // TODO: better default image handling
+            releaseDateLabel.text = movie.getReleaseDate()
+            poularityLabel.text = movie.getPopularity()
+            
             if movie.posterPath != nil {
                 let previewUrl = movie.getPosterImageUrl(Movie.PosterSize.Small.rawValue)
                 let fullUrl = movie.getPosterImageUrl(Movie.PosterSize.Original.rawValue)
@@ -44,7 +48,7 @@ class MovieDetailViewController: UIViewController {
 
     func resizeViews() {
         descriptionLabel.sizeToFit()
-        infoView.frame.size.height = descriptionLabel.frame.height + titleLabel.frame.height + 32.0
+        infoView.frame.size.height = descriptionLabel.frame.height + titleLabel.frame.height + releaseDateLabel.frame.height + 36.0
         scrollView.contentSize = CGSize(width: scrollView.frame.size.width, height: infoView.frame.origin.y + infoView.frame.size.height + infoView.frame.origin.x)
     }
     

@@ -59,6 +59,11 @@ class MoviesViewController: UIViewController {
         fetchMovies(self.endpoint)
     }
 
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        self.reloadViewData()
+    }
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

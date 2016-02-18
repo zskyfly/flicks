@@ -99,6 +99,24 @@ class Movie {
         return nil
     }
 
+    func getReleaseDate() -> String {
+        if let releaseDate = self.releaseDate {
+            let dateFormatter = NSDateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            let date = dateFormatter.dateFromString(releaseDate)
+            dateFormatter.dateStyle = NSDateFormatterStyle.MediumStyle
+            return dateFormatter.stringFromDate(date!)
+        }
+        return "unavailable"
+    }
+
+    func getPopularity() -> String {
+        if let popularity = self.popularity {
+            return String(format: "%.1f%%", popularity)
+        }
+        return "unavailable"
+    }
+
     class func fetchMovies(endpoint: String = Movie.Endpoint.NowPlaying.rawValue, page: Int = 1, successCallback: ([Movie], currentPage: Int, totalPages: Int) -> Void, error: ((NSError?) -> Void)?) {
         let manager = AFHTTPRequestOperationManager()
         let url = moviesBaseUrl + endpoint
