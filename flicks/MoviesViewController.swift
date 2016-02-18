@@ -20,6 +20,7 @@ class MoviesViewController: UIViewController {
     var searchBar: UISearchBar!
     var isSearchActive: Bool = false
 
+    @IBOutlet weak var layoutSegmentedControl: UISegmentedControl!
     @IBOutlet weak var moviesCollectionView: UICollectionView!
     @IBOutlet weak var moviesTableView: UITableView!
     @IBOutlet weak var errorView: UIView!
@@ -67,6 +68,20 @@ class MoviesViewController: UIViewController {
         fetchMovies(self.endpoint, refreshControl: refreshControl)
     }
 
+    @IBAction func onLayoutChange(sender: UISegmentedControl) {
+        let selectedIndex = sender.selectedSegmentIndex
+        switch selectedIndex {
+            case 0:
+                self.moviesCollectionView.hidden = true
+                self.moviesTableView.hidden = false
+            case 1:
+                self.moviesCollectionView.hidden = false
+                self.moviesTableView.hidden = true
+            default:
+                break
+        }
+        self.reloadViewData()
+    }
     private func displayError(error: NSError) {
         let errorMessage = error.localizedDescription
         self.errorLabel.text = errorMessage
@@ -85,8 +100,7 @@ class MoviesViewController: UIViewController {
             page: pageOffset,
             successCallback: { (newMovies, currentPage, totalPages) -> Void in
                 self.updateMovieDataStorage(newMovies, currentPage: currentPage, totalPages: totalPages, replaceData: replaceData)
-                self.moviesTableView.reloadData()
-                self.moviesCollectionView.reloadData()
+                self.reloadViewData()
                 self.errorView.hidden = true
                 if let refreshControl = refreshControl {
                     refreshControl.endRefreshing()
@@ -105,6 +119,18 @@ class MoviesViewController: UIViewController {
             moviesTableView.tableFooterView?.hidden = true
         } else {
             moviesTableView.tableFooterView?.hidden = false
+        }
+    }
+
+    private func reloadViewData() {
+        let selectedIndex = self.layoutSegmentedControl.selectedSegmentIndex
+        switch selectedIndex {
+        case 0:
+        self.moviesTableView.reloadData()
+        case 1:
+            self.moviesCollectionView.reloadData()
+        default:
+            break
         }
     }
 
@@ -201,7 +227,7 @@ extension MoviesViewController: UISearchBarDelegate {
         self.searchBar.text = ""
         self.searchBar.resignFirstResponder()
         self.isSearchActive = false
-        moviesTableView.reloadData()
+        self.reloadViewData()
     }
 
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
@@ -223,7 +249,7 @@ extension MoviesViewController: UISearchBarDelegate {
                 return false
             })
         }
-        self.moviesTableView.reloadData()
+        self.reloadViewData()
         self.toggleControls()
     }
 }

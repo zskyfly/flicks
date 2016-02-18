@@ -30,7 +30,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="96" height="96"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="HxR-sz-5IW">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="HxR-sz-5IW">
                                                     <rect key="frame" x="0.0" y="0.0" width="96" height="96"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
@@ -58,7 +58,7 @@
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="L3Y-h9-CEe">
                                                     <rect key="frame" x="106" y="8" width="206" height="24"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -67,9 +67,9 @@
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Yv6-kB-dYA">
-                                                    <rect key="frame" x="106" y="40" width="206" height="64"/>
+                                                    <rect key="frame" x="106" y="30" width="206" height="64"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -102,10 +102,27 @@
                         <gestureRecognizers/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <navigationItem key="navigationItem" id="SKS-V8-Rcl"/>
+                    <navigationItem key="navigationItem" id="SKS-V8-Rcl">
+                        <nil key="title"/>
+                        <barButtonItem key="leftBarButtonItem" style="done" id="Vzm-Yc-Bzj">
+                            <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="u6I-ug-jSp">
+                                <rect key="frame" x="16" y="8" width="128" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="" image="list_view"/>
+                                    <segment title="" image="grid_view"/>
+                                </segments>
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <action selector="onLayoutChange:" destination="BYZ-38-t0r" eventType="valueChanged" id="qNF-Kd-Kg2"/>
+                                </connections>
+                            </segmentedControl>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="errorLabel" destination="r45-07-414" id="kUk-IJ-OVk"/>
                         <outlet property="errorView" destination="0x8-BG-EYK" id="Q6j-yD-nqy"/>
+                        <outlet property="layoutSegmentedControl" destination="u6I-ug-jSp" id="Cc7-dw-2Zk"/>
                         <outlet property="moviesCollectionView" destination="EXP-v1-3az" id="vw1-Vl-u4h"/>
                         <outlet property="moviesTableView" destination="f1m-nG-CaC" id="A0c-ry-KNe"/>
                     </connections>
@@ -188,4 +205,8 @@
             <point key="canvasLocation" x="130" y="319"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="grid_view" width="24" height="24"/>
+        <image name="list_view" width="24" height="24"/>
+    </resources>
 </document>

@@ -34,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         let tabBarController = UITabBarController()
         tabBarController.viewControllers = [nowPlayingNavigationController, topRatedNavigationController]
-
+        window?.tintColor = UIColor.blackColor()
         window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()
 
